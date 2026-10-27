@@ -1,0 +1,303 @@
+---
+import Plate from './Plate.astro';
+import Icon from './Icon.astro';
+import { type Client, telHref, hoursShort, formatPrice, plural } from '../lib/client';
+
+interface Props {
+  client: Client;
+}
+const { client } = Astro.props;
+
+const popular = client.services.flatMap((g) => g.items).filter((i) => i.popular).slice(0, 4);
+const hoursText = hoursShort(client.hours);
+---
+
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-main">
+      <Plate text={client.plateText ?? client.name} region={client.region} />
+      <h1>{client.headline}</h1>
+      {client.lead && <p class="lead">{client.lead}</p>}
+
+      <ul class="facts">
+        <li>
+          <Icon name="pin" />
+          <span>
+            {client.address}{client.city && <span class="muted">, {client.city}</span>}
+          </span>
+        </li>
+        <li>
+          <Icon name="clock" />
+          <span>
+            <span class="open-status" data-open-status data-hours={JSON.stringify(client.hours)}></span>
+            <span class="muted">{hoursText}</span>
+          </span>
+        </li>
+        {
+          client.rating && (
+            <li>
+              <Icon name="star" class="star" />
+              <span>
+                Рейтинг <strong>{client.rating.value.toFixed(1).replace('.', ',')}</strong> на {client.rating.source}<span class="muted">, {client.rating.count} {plural(client.rating.count, 'отзыв', 'отзыва', 'отзывов')}</span>
+              </span>
+            </li>
+          )
+        }
+      </ul>
+
+      <div class="actions">
+        <a class="btn btn-primary" href={telHref(client.phone)}>
+          <Icon name="phone" />
+          Позвонить
+          <span class="btn-phone">{client.phone}</span>
+        </a>
+        <a class="btn btn-secondary" href="#booking">
+          <Icon name="calendar" />
+          Записаться онлайн
+        </a>
+      </div>
+    </div>
+
+    {
+      popular.length > 0 && (
+        <aside class="price-board" aria-labelledby="popular-title">
+          <h2 id="popular-title">Частые работы</h2>
+          <ul>
+            {popular.map((item) => (
+              <li>
+                <span>{item.name}</span>
+                <span class="dots" aria-hidden="true" />
+                <strong>{formatPrice(item)}</strong>
+              </li>
+            ))}
+          </ul>
+          <a href="#prices">Весь прайс</a>
+        </aside>
+      )
+    }
+  </div>
+</header>
+
+<script>
+  // «Открыто до 19:00» / «Закрыто, откроемся завтра в 8:00» — по московскому времени
+  type Row = { days: number[]; open: string; close: string };
+  type Hours = { alwaysOpen?: boolean; schedule?: Row[] };
+
+  const toMin = (t: string) => {
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+  };
+
+  function nowInMoscow() {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/Moscow',
+      weekday: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23',
+    }).formatToParts(new Date());
+    const get = (t: string) => parts.find((p) => p.type === t)?.value ?? '';
+    const day = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].indexOf(get('weekday')) + 1;
+    return { day, min: Number(get('hour')) * 60 + Number(get('minute')) };
+  }
+
+  function status(hours: Hours): { open: boolean; text: string } {
+    if (hours.alwaysOpen) return { open: true, text: 'Открыто круглосуточно' };
+    const rows = hours.schedule ?? [];
+    const rowFor = (d: number) => rows.find((r) => r.days.includes(d));
+    const { day, min } = nowInMoscow();
+
+    const today = rowFor(day);
+    if (today && min >= toMin(today.open) && min < toMin(today.close)) {
+      return { open: true, text: `Открыто до ${today.close}` };
+    }
+    if (today && min < toMin(today.open)) {
+      return { open: false, text: `Закрыто, откроемся в ${today.open}` };
+    }
+    for (let i = 1; i <= 7; i++) {
+      const d = ((day - 1 + i) % 7) + 1;
+      const r = rowFor(d);
+      if (r) {
+        const when = i === 1 ? 'завтра' : ['', 'в понедельник', 'во вторник', 'в среду', 'в четверг', 'в пятницу', 'в субботу', 'в воскресенье'][d];
+        return { open: false, text: `Закрыто, откроемся ${when} в ${r.open}` };
+      }
+    }
+    return { open: false, text: 'Закрыто' };
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-open-status]').forEach((el) => {
+    try {
+      const s = status(JSON.parse(el.dataset.hours ?? '{}'));
+      el.textContent = s.text;
+      el.classList.add(s.open ? 'is-open' : 'is-closed');
+      el.nextElementSibling?.classList.add('has-status');
+    } catch {
+      /* без статуса остаётся просто расписание */
+    }
+  });
+</script>
+
+<style>
+  .hero {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 56px 0 64px;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 56px;
+    align-items: end;
+  }
+
+  .hero-main {
+    min-width: 0;
+  }
+
+  h1 {
+    margin-top: 40px;
+    font-size: clamp(2rem, 4.6vw, 3.1rem);
+    max-width: 18ch;
+  }
+
+  .lead {
+    margin-top: 16px;
+    max-width: 52ch;
+    font-size: 1.1rem;
+    color: var(--muted);
+  }
+
+  .facts {
+    list-style: none;
+    margin: 28px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  .facts li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .facts svg {
+    width: 20px;
+    height: 20px;
+    margin-top: 3px;
+    flex: none;
+    color: var(--accent);
+  }
+
+  .facts .star {
+    color: var(--star);
+  }
+
+  .muted {
+    color: var(--muted);
+  }
+
+  .open-status {
+    font-weight: 600;
+  }
+
+  .open-status.is-open {
+    color: var(--ok);
+  }
+
+  .open-status.is-closed {
+    color: var(--closed);
+  }
+
+  .has-status {
+    display: block;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+
+  .btn-phone {
+    font-weight: 500;
+    opacity: 0.85;
+  }
+
+  /* Ценник на первом экране — как табличка с прайсом на стене бокса */
+  .price-board {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-radius: var(--radius);
+    padding: 24px 24px 20px;
+  }
+
+  .price-board h2 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    opacity: 0.85;
+  }
+
+  .price-board ul {
+    list-style: none;
+    margin: 14px 0 18px;
+    padding: 0;
+  }
+
+  .price-board li {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 9px 0;
+    border-top: 1px solid rgb(255 255 255 / 0.18);
+  }
+
+  .price-board li span:first-child {
+    min-width: 0;
+  }
+
+  .dots {
+    flex: 1;
+    min-width: 12px;
+    border-bottom: 2px dotted rgb(255 255 255 / 0.35);
+    transform: translateY(-4px);
+  }
+
+  .price-board strong {
+    white-space: nowrap;
+    font-weight: 700;
+  }
+
+  .price-board a {
+    color: inherit;
+    font-weight: 600;
+    text-underline-offset: 3px;
+  }
+
+  @media (max-width: 900px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      padding: 32px 0 40px;
+    }
+
+    h1 {
+      margin-top: 28px;
+    }
+
+    .actions .btn {
+      flex: 1 1 100%;
+    }
+
+    .btn-phone {
+      display: none;
+    }
+  }
+</style>

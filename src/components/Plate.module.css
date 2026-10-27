@@ -1,0 +1,71 @@
+.plate {
+  /* ширина символа узкого жирного шрифта ≈ 0.52em; 4.4em — регион, рамки и отступы */
+  --fs: min(76px, calc((100vw - 2 * var(--gutter)) / (var(--len) * 0.52 + 4.4)));
+  display: inline-flex;
+  align-items: stretch;
+  max-width: 100%;
+  font-family: var(--font-plate);
+  font-weight: 700;
+  font-size: var(--fs);
+  line-height: 1;
+  color: var(--plate-ink);
+  background: #fff;
+  border: max(2px, 0.05em) solid var(--plate-ink);
+  border-radius: 0.14em;
+  box-shadow:
+    0 0 0 max(3px, 0.07em) #fff,
+    0 0 0 max(4px, 0.085em) color-mix(in srgb, var(--plate-ink) 25%, transparent),
+    0 0.18em 0.45em -0.12em rgb(20 30 45 / 0.25);
+}
+
+.text {
+  padding: 0.13em 0.22em 0.08em;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.region {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.06em;
+  padding: 0.06em 0.16em;
+  border-left: max(2px, 0.05em) solid var(--plate-ink);
+}
+
+.regionNum {
+  font-size: 0.68em;
+}
+
+.regionRus {
+  display: flex;
+  align-items: center;
+  gap: 0.12em;
+  font-size: 0.26em;
+  letter-spacing: 0.04em;
+}
+
+.flag {
+  display: inline-flex;
+  flex-direction: column;
+  width: 1.2em;
+  height: 0.8em;
+  outline: 1px solid color-mix(in srgb, var(--plate-ink) 30%, transparent);
+}
+
+.flag i {
+  flex: 1;
+}
+
+.flag i:nth-child(1) {
+  background: #fff;
+}
+
+.flag i:nth-child(2) {
+  background: #0039a6;
+}
+
+.flag i:nth-child(3) {
+  background: #d52b1e;
+}

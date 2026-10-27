@@ -1,0 +1,58 @@
+.groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.group {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 24px 8px;
+}
+
+.group h3 {
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--ink);
+}
+
+.group table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.group tr + tr {
+  border-top: 1px solid var(--line);
+}
+
+.group th,
+.group td {
+  padding: 12px 0;
+  vertical-align: baseline;
+}
+
+.group th {
+  text-align: left;
+  font-weight: 400;
+  padding-right: 16px;
+}
+
+.note {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.group td {
+  text-align: right;
+  white-space: nowrap;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.group td.onRequest {
+  font-weight: 400;
+  color: var(--muted);
+}

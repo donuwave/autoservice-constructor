@@ -1,0 +1,189 @@
+---
+import Icon from './Icon.astro';
+import {
+  type Client,
+  hoursLines,
+  telHref,
+  telegramHref,
+  whatsappHref,
+  yandexMapEmbed,
+  yandexRouteHref,
+} from '../lib/client';
+
+interface Props {
+  client: Client;
+}
+const { client } = Astro.props;
+const lines = hoursLines(client.hours);
+---
+
+<section class="section contacts" id="contacts" aria-labelledby="contacts-title">
+  <div class="wrap grid">
+    <div class="info">
+      <h2 id="contacts-title">Как добраться</h2>
+
+      <p class="address">
+        {client.address}{client.city && `, ${client.city}`}
+      </p>
+      {client.addressNote && <p class="muted">{client.addressNote}</p>}
+
+      <a class="btn btn-secondary route" href={yandexRouteHref(client.coords)} target="_blank" rel="noopener">
+        <Icon name="route" />
+        Построить маршрут
+      </a>
+
+      <h3>Часы работы</h3>
+      <dl class="hours">
+        {
+          lines.map((l) => (
+            <div>
+              <dt>{l.days}</dt>
+              <dd class={l.time === 'выходной' ? 'off' : undefined}>{l.time}</dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <h3>Связаться</h3>
+      <ul class="links">
+        <li>
+          <a href={telHref(client.phone)}><Icon name="phone" />{client.phone}</a>
+        </li>
+        {
+          client.telegram && (
+            <li>
+              <a href={telegramHref(client.telegram)} target="_blank" rel="noopener">
+                <Icon name="telegram" />
+                Написать в Telegram
+              </a>
+            </li>
+          )
+        }
+        {
+          client.whatsapp && (
+            <li>
+              <a href={whatsappHref(client.whatsapp)} target="_blank" rel="noopener">
+                <Icon name="whatsapp" />
+                Написать в WhatsApp
+              </a>
+            </li>
+          )
+        }
+      </ul>
+    </div>
+
+    <div class="map">
+      <iframe
+        src={yandexMapEmbed(client.coords)}
+        title={`${client.name} на карте`}
+        loading="lazy"
+        allowfullscreen></iframe>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contacts {
+    background: var(--surface);
+    border-block: 1px solid var(--line);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 48px;
+  }
+
+  .address {
+    margin-top: 20px;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .muted {
+    margin-top: 4px;
+    color: var(--muted);
+  }
+
+  .route {
+    margin-top: 20px;
+  }
+
+  h3 {
+    margin: 36px 0 12px;
+  }
+
+  .hours {
+    margin: 0;
+    max-width: 320px;
+  }
+
+  .hours div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hours dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hours dd.off {
+    color: var(--muted);
+  }
+
+  .links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .links a:hover {
+    text-decoration: underline;
+  }
+
+  .links :global(svg) {
+    width: 20px;
+    height: 20px;
+  }
+
+  .map {
+    min-height: 420px;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--line);
+    background: var(--page);
+  }
+
+  .map iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    border: 0;
+  }
+
+  @media (max-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .map,
+    .map iframe {
+      min-height: 320px;
+    }
+  }
+</style>

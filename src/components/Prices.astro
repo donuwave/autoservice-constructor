@@ -1,0 +1,101 @@
+---
+import { type Client, formatPrice } from '../lib/client';
+
+interface Props {
+  client: Client;
+}
+const { client } = Astro.props;
+---
+
+<section class="section" id="prices" aria-labelledby="prices-title">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="prices-title">Услуги и цены</h2>
+      {client.pricesNote && <p>{client.pricesNote}</p>}
+    </div>
+
+    <div class="groups">
+      {
+        client.services.map((group) => (
+          <div class="group">
+            <h3>{group.title}</h3>
+            <table>
+              <tbody>
+                {group.items.map((item) => (
+                  <tr>
+                    <th scope="row">
+                      {item.name}
+                      {item.note && <span class="note">{item.note}</span>}
+                    </th>
+                    <td class={item.price === null ? 'on-request' : undefined}>{formatPrice(item)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: 20px;
+    align-items: start;
+  }
+
+  .group {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 24px 8px;
+  }
+
+  h3 {
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  tr + tr {
+    border-top: 1px solid var(--line);
+  }
+
+  th,
+  td {
+    padding: 12px 0;
+    vertical-align: baseline;
+  }
+
+  th {
+    text-align: left;
+    font-weight: 400;
+    padding-right: 16px;
+  }
+
+  .note {
+    display: block;
+    margin-top: 2px;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  td {
+    text-align: right;
+    white-space: nowrap;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  td.on-request {
+    font-weight: 400;
+    color: var(--muted);
+  }
+</style>

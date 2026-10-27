@@ -1,0 +1,217 @@
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 48px;
+  align-items: start;
+}
+
+.intro p {
+  margin-top: 16px;
+  color: var(--muted);
+  max-width: 40ch;
+}
+
+.intro .call {
+  color: var(--ink);
+}
+
+.call a {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+.card form {
+  display: grid;
+  gap: 18px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.field > span,
+.field legend {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  padding: 0;
+}
+
+.field legend {
+  margin-bottom: 8px;
+}
+
+.field em {
+  font-style: normal;
+  font-weight: 400;
+  color: var(--muted);
+  margin-left: 4px;
+}
+
+.card input[type='text'],
+.card input[type='tel'],
+.card textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #b9c1cb;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+}
+
+.card textarea {
+  resize: vertical;
+}
+
+.card input:focus-visible,
+.card textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 0;
+  border-color: var(--accent);
+}
+
+.card input[aria-invalid='true'] {
+  border-color: var(--closed);
+}
+
+.error {
+  color: var(--closed);
+  font-size: 0.875rem;
+}
+
+.error[hidden],
+.formError[hidden] {
+  display: none;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  position: relative;
+}
+
+.chip input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.chip span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid #b9c1cb;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9375rem;
+}
+
+.chip input:checked + span {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.chip input:focus-visible + span {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.submit {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.formError {
+  color: var(--closed);
+}
+
+.consent {
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.hp {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.done {
+  text-align: center;
+  padding: 32px 8px;
+}
+
+.done:focus {
+  outline: none;
+}
+
+.doneIcon {
+  display: inline-grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ok) 14%, white);
+  color: var(--ok);
+}
+
+.doneIcon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.done h3 {
+  margin-top: 16px;
+  font-size: 1.4rem;
+}
+
+.done p {
+  margin: 8px auto 0;
+  max-width: 36ch;
+  color: var(--muted);
+}
+
+@media (max-width: 860px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
+
+@media (max-width: 520px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 20px 16px;
+  }
+}

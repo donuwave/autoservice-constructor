@@ -1,0 +1,62 @@
+.footer {
+  padding: 36px 0;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.9375rem;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.footer span {
+  color: rgb(255 255 255 / 0.65);
+}
+
+.footer a {
+  color: #fff;
+  font-weight: 600;
+}
+
+.addr {
+  display: block;
+}
+
+.right {
+  text-align: right;
+}
+
+.mobileBar {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .footer {
+    padding-bottom: 104px;
+  }
+
+  .right {
+    text-align: left;
+  }
+
+  .mobileBar {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    background: rgb(255 255 255 / 0.96);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -6px 18px rgb(20 30 45 / 0.08);
+  }
+
+  .mobileBar :global(.btn) {
+    min-height: 48px;
+    padding: 0 12px;
+  }
+}

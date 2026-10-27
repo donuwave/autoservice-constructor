@@ -1,0 +1,105 @@
+---
+import Icon from './Icon.astro';
+import { type Client, plural } from '../lib/client';
+
+interface Props {
+  client: Client;
+}
+const { client } = Astro.props;
+const reviews = client.reviews.slice(0, 4);
+---
+
+{
+  reviews.length > 0 && (
+    <section class="section" id="reviews" aria-labelledby="reviews-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="reviews-title">Отзывы</h2>
+          {client.rating && (
+            <p>
+              {client.rating.value.toFixed(1).replace('.', ',')} из 5 на {client.rating.source},{' '}
+              {client.rating.count} {plural(client.rating.count, 'отзыв', 'отзыва', 'отзывов')}.{' '}
+              {client.rating.url && (
+                <a href={client.rating.url} target="_blank" rel="noopener">
+                  Читать все
+                </a>
+              )}
+            </p>
+          )}
+        </div>
+
+        <div class="grid">
+          {reviews.map((r) => (
+            <figure>
+              <div class="stars" role="img" aria-label={`Оценка ${r.rating} из 5`}>
+                {Array.from({ length: 5 }, (_, i) => (
+                  <Icon name="star" class={i < r.rating ? 'on' : 'off'} />
+                ))}
+              </div>
+              <blockquote>
+                <p>{r.text}</p>
+              </blockquote>
+              <figcaption>
+                <strong>{r.author}</strong>
+                {(r.date || r.source) && <span>{[r.date, r.source].filter(Boolean).join(', ')}</span>}
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 20px;
+  }
+
+  figure {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+  }
+
+  .stars {
+    display: flex;
+    gap: 2px;
+  }
+
+  .stars :global(svg) {
+    width: 18px;
+    height: 18px;
+  }
+
+  .stars :global(.on) {
+    color: var(--star);
+  }
+
+  .stars :global(.off) {
+    color: var(--line);
+  }
+
+  blockquote {
+    margin: 0;
+    flex: 1;
+  }
+
+  figcaption {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9375rem;
+  }
+
+  figcaption span {
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+</style>

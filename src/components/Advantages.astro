@@ -1,0 +1,79 @@
+---
+import type { Client } from '../lib/client';
+
+interface Props {
+  client: Client;
+}
+const { client } = Astro.props;
+---
+
+{
+  client.advantages.length > 0 && (
+    <section class="section advantages" aria-labelledby="why-title">
+      <div class="wrap">
+        <h2 id="why-title">Почему едут к нам</h2>
+        <div class="list">
+          {client.advantages.map((a) => (
+            <article>
+              <h3>{a.title}</h3>
+              <p>{a.text}</p>
+              {a.quote && (
+                <blockquote>
+                  <p>«{a.quote.text}»</p>
+                  <cite>{a.quote.author}, из отзыва</cite>
+                </blockquote>
+              )}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .advantages {
+    background: var(--surface);
+    border-block: 1px solid var(--line);
+  }
+
+  h2 {
+    margin-bottom: 36px;
+  }
+
+  .list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 32px 40px;
+  }
+
+  article {
+    border-top: 4px solid var(--accent);
+    padding-top: 20px;
+  }
+
+  article > p {
+    margin-top: 10px;
+    color: var(--muted);
+    max-width: 40ch;
+  }
+
+  blockquote {
+    margin: 18px 0 0;
+    padding: 14px 16px;
+    background: var(--accent-soft);
+    border-radius: 8px;
+  }
+
+  blockquote p {
+    font-weight: 500;
+  }
+
+  cite {
+    display: block;
+    margin-top: 6px;
+    font-style: normal;
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+</style>

@@ -1,0 +1,162 @@
+.hero {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  padding: 56px 0 64px;
+}
+
+.heroGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 56px;
+  align-items: end;
+}
+
+.heroMain {
+  min-width: 0;
+}
+
+.heroMain h1 {
+  margin-top: 40px;
+  font-size: clamp(2rem, 4.6vw, 3.1rem);
+  max-width: 18ch;
+}
+
+.lead {
+  margin-top: 16px;
+  max-width: 52ch;
+  font-size: 1.1rem;
+  color: var(--muted);
+}
+
+.facts {
+  list-style: none;
+  margin: 28px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.facts li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.facts svg {
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  flex: none;
+  color: var(--accent);
+}
+
+.facts .star {
+  color: var(--star);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.hoursText {
+  display: block;
+}
+
+.openStatus {
+  font-weight: 600;
+}
+
+.isOpen {
+  color: var(--ok);
+}
+
+.isClosed {
+  color: var(--closed);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.btnPhone {
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+/* Ценник на первом экране — как табличка с прайсом на стене бокса */
+.priceBoard {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: var(--radius);
+  padding: 24px 24px 20px;
+}
+
+.priceBoard h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  opacity: 0.85;
+}
+
+.priceBoard ul {
+  list-style: none;
+  margin: 14px 0 18px;
+  padding: 0;
+}
+
+.priceBoard li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 9px 0;
+  border-top: 1px solid rgb(255 255 255 / 0.18);
+}
+
+.priceBoard li span:first-child {
+  min-width: 0;
+}
+
+.dots {
+  flex: 1;
+  min-width: 12px;
+  border-bottom: 2px dotted rgb(255 255 255 / 0.35);
+  transform: translateY(-4px);
+}
+
+.priceBoard strong {
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+.priceBoard a {
+  color: inherit;
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+
+@media (max-width: 900px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 32px 0 40px;
+  }
+
+  .heroMain h1 {
+    margin-top: 28px;
+  }
+
+  .actions :global(.btn) {
+    flex: 1 1 100%;
+  }
+
+  .btnPhone {
+    display: none;
+  }
+}

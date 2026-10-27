@@ -1,0 +1,44 @@
+.advantages {
+  background: var(--surface);
+  border-block: 1px solid var(--line);
+}
+
+.advantages h2 {
+  margin-bottom: 36px;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 32px 40px;
+}
+
+.list article {
+  border-top: 4px solid var(--accent);
+  padding-top: 20px;
+}
+
+.list article > p {
+  margin-top: 10px;
+  color: var(--muted);
+  max-width: 40ch;
+}
+
+.list blockquote {
+  margin: 18px 0 0;
+  padding: 14px 16px;
+  background: var(--accent-soft);
+  border-radius: 8px;
+}
+
+.list blockquote p {
+  font-weight: 500;
+}
+
+.list cite {
+  display: block;
+  margin-top: 6px;
+  font-style: normal;
+  font-size: 0.875rem;
+  color: var(--muted);
+}

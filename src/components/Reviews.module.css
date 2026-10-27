@@ -1,0 +1,50 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 20px;
+}
+
+.grid figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.stars svg {
+  width: 18px;
+  height: 18px;
+}
+
+.on {
+  color: var(--star);
+}
+
+.off {
+  color: var(--line);
+}
+
+.grid blockquote {
+  margin: 0;
+  flex: 1;
+}
+
+.grid figcaption {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9375rem;
+}
+
+.grid figcaption span {
+  color: var(--muted);
+  font-size: 0.875rem;
+}

@@ -1,0 +1,74 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from './Hero.astro';
+import Prices from './Prices.astro';
+import Advantages from './Advantages.astro';
+import Reviews from './Reviews.astro';
+import Booking from './Booking.astro';
+import Contacts from './Contacts.astro';
+import Footer from './Footer.astro';
+import { type Client, openingHoursSpec, hoursShort } from '../lib/client';
+
+interface Props {
+  client: Client;
+  /** Демо-страницы закрыты от поисковиков */
+  noindex?: boolean;
+}
+const { client, noindex = false } = Astro.props;
+
+const title = client.seo?.title ?? `${client.name}: автосервис на ${client.address.replace(/^ул\.\s*/, '')}`;
+const description =
+  client.seo?.description ??
+  `${client.headline}. ${client.address}${client.city ? ', ' + client.city : ''}. ${hoursShort(client.hours)}. Запись онлайн и по телефону ${client.phone}.`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AutoRepair',
+  name: client.name,
+  telephone: client.phone,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: client.address,
+    addressLocality: client.city,
+    addressCountry: 'RU',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: client.coords[0], longitude: client.coords[1] },
+  openingHoursSpecification: openingHoursSpec(client.hours),
+  ...(client.rating && {
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: client.rating.value,
+      reviewCount: client.rating.count,
+    },
+  }),
+};
+---
+
+<Layout title={title} description={description} accent={client.theme?.accent} noindex={noindex} jsonLd={jsonLd}>
+  {
+    client.demo?.enabled && (
+      <div class="demo-bar" role="note">
+        <div class="wrap">{client.demo.note ?? 'Это пример сайта. Цены и тексты примерные.'}</div>
+      </div>
+    )
+  }
+  <Hero client={client} />
+  <main>
+    <Prices client={client} />
+    <Advantages client={client} />
+    <Reviews client={client} />
+    <Contacts client={client} />
+    <Booking client={client} />
+  </main>
+  <Footer client={client} />
+</Layout>
+
+<style>
+  .demo-bar {
+    background: #fff4c4;
+    color: #5a4600;
+    font-size: 0.875rem;
+    padding: 8px 0;
+    border-bottom: 1px solid #eadb92;
+  }
+</style>
